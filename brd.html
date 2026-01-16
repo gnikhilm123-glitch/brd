@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday 💗</title>
+
+<style>
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{
+    margin:0;
+    background:radial-gradient(circle at top,#2b0033,#000);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    color:white;
+}
+
+/* FLOATING ELEMENTS */
+.float{
+    position:absolute;
+    bottom:-60px;
+    animation:float 6s linear infinite;
+    opacity:0.9;
+    z-index:10;
+    pointer-events:none;
+}
+.heart{font-size:22px;color:#ff4fa3}
+.rose{font-size:24px}
+
+.balloon{
+    width:30px;
+    height:40px;
+    border-radius:50% 50% 45% 45%;
+    position:absolute;
+}
+.balloon::after{
+    content:'';
+    position:absolute;
+    bottom:-15px;
+    left:50%;
+    width:2px;
+    height:15px;
+    background:#fff;
+    transform:translateX(-50%);
+}
+
+.pop{animation:pop 0.35s forwards!important}
+@keyframes pop{
+    0%{transform:scale(1);opacity:1}
+    70%{transform:scale(2)}
+    100%{transform:scale(0);opacity:0}
+}
+
+@keyframes float{
+    to{transform:translateY(-120vh)}
+}
+
+/* SCREEN */
+.screen{
+    width:360px;
+    height:640px;
+    background:#0b0010;
+    border-radius:25px;
+    padding:20px;
+    display:none;
+    text-align:center;
+    z-index:5;
+    position:relative;
+}
+.active{display:flex;flex-direction:column;align-items:center}
+
+/* START BUTTON */
+.start-btn{
+    margin-top:260px;
+    background:#ff4fa3;
+    color:white;
+    padding:15px 25px;
+    border-radius:25px;
+    border:none;
+    font-size:16px;
+    cursor:pointer;
+    animation:pulse 1.5s infinite;
+}
+@keyframes pulse{50%{transform:scale(1.05)}}
+
+/* LOADER */
+.loader-box{margin-top:220px;background:#2b0033;padding:25px;border-radius:20px}
+.bar{width:100%;height:10px;background:#444;border-radius:10px;overflow:hidden;margin-top:15px}
+.fill{width:0;height:100%;background:#ff4fa3;animation:load 3s forwards}
+@keyframes load{to{width:120%}}
+
+.note{background:#ffd6e8;color:#4b0033;border-radius:20px;padding:20px;margin-top:130px}
+.note button{margin-top:15px;background:#ff4fa3;color:#fff;border:none;padding:10px 20px;border-radius:20px}
+
+/* CAKE AREA */
+.cake-area{
+    position:relative;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    margin-top:140px;
+}
+
+/* SIDE IMAGES */
+.side-img{
+    width:100px;
+    height:120px;
+    object-fit:cover;
+    border-radius:20px;
+    box-shadow:0 0 20px rgba(255,79,163,0.7);
+    opacity:0;
+    transform:scale(0.5) translateX(0);
+    transition:0.8s ease, box-shadow 0.5s ease;
+}
+
+.show-img-left{
+    opacity:1;
+    transform:scale(1) translateX(0);
+    animation:slideInLeft 0.8s forwards;
+    box-shadow:0 0 35px rgba(255,79,163,1),0 0 50px rgba(255,192,203,0.6);
+}
+.show-img-right{
+    opacity:1;
+    transform:scale(1) translateX(0);
+    animation:slideInRight 0.8s forwards;
+    box-shadow:0 0 35px rgba(79,195,247,1),0 0 50px rgba(255,192,203,0.6);
+}
+
+@keyframes slideInLeft{
+    0%{transform:scale(0.5) translateX(-200px); opacity:0}
+    100%{transform:scale(1) translateX(0); opacity:1}
+}
+@keyframes slideInRight{
+    0%{transform:scale(0.5) translateX(200px); opacity:0}
+    100%{transform:scale(1) translateX(0); opacity:1}
+}
+
+/* CAKE */
+.cake{
+    width:200px;
+    height:120px;
+    background:#8b4513;
+    border-radius:0 0 20px 20px;
+    position:relative;
+}
+.cake::before{
+    content:'';
+    position:absolute;
+    top:-40px;
+    left:0;
+
+    width:100%;
+    height:40px;
+    background:#ffb6c1;
+    border-radius:10px 10px 0 0;
+}
+
+/* CANDLES */
+.candle{position:absolute;top:-65px;width:10px;height:30px;background:white}
+.candle:nth-child(1){left:10px}
+.candle:nth-child(2){left:75px}
+.candle:nth-child(3){left:140px}
+
+.flame{
+    position:absolute;
+    top:-15px;
+    left:-5px;
+    width:20px;
+    height:20px;
+    background:radial-gradient(circle,yellow,orange,red);
+    border-radius:50%;
+    animation:flicker 0.3s infinite;
+}
+@keyframes flicker{50%{transform:scale(1.2)}}
+
+/* WISH */
+.wish{
+    margin-top:25px;
+    font-size:18px;
+    display:none;
+    animation:fadeUp 1s ease;
+}
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+
+<script>
+const colors=["#ff4fa3","#ffcc00","#4fc3f7","#81c784","#ff7043"];
+let balloons=[];
+
+/* BACKGROUND FLOATING ELEMENTS */
+for(let i=0;i<25;i++){
+    let el=document.createElement("div");
+    el.classList.add("float");
+    el.style.left=Math.random()*100+"vw";
+    el.style.animationDuration=4+Math.random()*4+"s";
+    let r=Math.random();
+    if(r<0.33){el.innerHTML="❤";el.classList.add("heart")}
+    else if(r<0.66){el.innerHTML="🌹";el.classList.add("rose")}
+    else{
+        el.classList.add("balloon");
+        el.style.background=colors[Math.floor(Math.random()*colors.length)];
+        balloons.push(el);
+    }
+    document.body.appendChild(el);
+}
+</script>
+
+<!-- SCREEN 1 -->
+<div class="screen active" id="s1">
+    <button class="start-btn" onclick="start()">I made something for you 💗</button>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen" id="s2">
+    <div class="loader-box">
+        <p>Measuring your cuteness…</p>
+        <h2>120%</h2>
+        <div class="bar"><div class="fill"></div></div>
+        <p>⚠️ TOO CUTE TO HANDLE</p>
+    </div>
+</div>
+
+<!-- SCREEN 3 -->
+<div class="screen" id="s3">
+    <div class="note">
+        <h3>A little note for you 💖</h3>
+        <p id="type"></p>
+        <button onclick="next()">One more thing →</button>
+    </div>
+</div>
+
+<!-- SCREEN 4 -->
+<div class="screen" id="s4">
+    <div class="cake-area">
+	<img src="https://media.istockphoto.com/id/939746516/photo/young-girl-holding-mothers-day-gift.jpg?s=612x612&w=0&k=20&c=rdMYL-zbZJoLmVrBPozXJjkJw41x7OSW05YYeWRvelg=" class="side-img left" id="img1">
+        <div class="cake" onclick="blow()">
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+        </div>
+        <img src="https://media.istockphoto.com/id/939746516/photo/young-girl-holding-mothers-day-gift.jpg?s=612x612&w=0&k=20&c=rdMYL-zbZJoLmVrBPozXJjkJw41x7OSW05YYeWRvelg=" class="side-img right" id="img2">
+    </div>
+    <p>Blow the candles 🎂</p>
+    <div class="wish" id="wish">
+        🎉 Happy Birthday Deepthi 🎉<br><br>
+        May your life be filled with love,<br>
+        happiness and beautiful moments 💖✨
+	Always keep smile on your Face it suits you💖
+	✨I pray God to fulfill all your wishes💖
+    </div>
+</div>
+
+<script>
+let current=1;
+const text=`Thank you for coming into my life
+and being one of my best friends 💖
+
+You are special just the way you are 🌸`;
+let i=0;
+
+function start(){
+    show(2);
+    setTimeout(()=>{show(3);typing()},3500);
+}
+function typing(){
+    if(i<text.length){
+        document.getElementById("type").innerHTML+=text.charAt(i++);
+        setTimeout(typing,40);
+    }
+}
+function next(){show(4)}
+function show(n){
+    document.getElementById("s"+current).classList.remove("active");
+    document.getElementById("s"+n).classList.add("active");
+    current=n;
+}
+
+/* FINAL CANDLE BLOW MAGIC */
+function blow(){
+    document.querySelectorAll(".flame").forEach(f=>f.remove());
+
+    // Pop balloons
+    balloons.forEach(b=>{
+        b.classList.add("pop");
+        setTimeout(()=>b.remove(),350);
+    });
+
+    // Show side images with slide + sparkle
+    document.getElementById("img1").classList.add("show-img-left");
+    document.getElementById("img2").classList.add("show-img-right");
+
+    // Show birthday wish
+    document.getElementById("wish").style.display="block";
+
+    // Add floating hearts/roses/balloons
+    for(let i=0;i<45;i++){
+        let el=document.createElement("div");
+        el.classList.add("float");
+        el.style.left=Math.random()*100+"vw";
+        el.style.animationDuration=3+Math.random()*4+"s";
+        let r=Math.random();
+        if(r<0.4){el.innerHTML="🌹";el.classList.add("rose")}
+        else if(r<0.7){el.innerHTML="❤";el.classList.add("heart")}
+        else{
+            el.classList.add("balloon");
+            el.style.background=colors[Math.floor(Math.random()*colors.length)];
+        }
+        document.body.appendChild(el);
+    }
+}
+</script>
+
+</body>
+</html>
