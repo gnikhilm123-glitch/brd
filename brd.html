@@ -120,13 +120,11 @@ body{
     opacity:1;
     transform:scale(1) translateX(0);
     animation:slideInLeft 0.8s forwards;
-    box-shadow:0 0 35px rgba(255,79,163,1),0 0 50px rgba(255,192,203,0.6);
 }
 .show-img-right{
     opacity:1;
     transform:scale(1) translateX(0);
     animation:slideInRight 0.8s forwards;
-    box-shadow:0 0 35px rgba(79,195,247,1),0 0 50px rgba(255,192,203,0.6);
 }
 
 @keyframes slideInLeft{
@@ -151,7 +149,6 @@ body{
     position:absolute;
     top:-40px;
     left:0;
-
     width:100%;
     height:40px;
     background:#ffb6c1;
@@ -195,6 +192,7 @@ body{
 <script>
 const colors=["#ff4fa3","#ffcc00","#4fc3f7","#81c784","#ff7043"];
 let balloons=[];
+let userName="";
 
 /* BACKGROUND FLOATING ELEMENTS */
 for(let i=0;i<25;i++){
@@ -214,8 +212,18 @@ for(let i=0;i<25;i++){
 }
 </script>
 
+<!-- SCREEN 0 (NEW) -->
+<div class="screen active" id="s0">
+    <div class="note">
+        <h3>Please enter your name 💖</h3>
+        <input id="nameInput" placeholder="Your name"
+               style="padding:10px;border-radius:15px;border:none;width:80%;text-align:center;">
+        <button onclick="saveName()">Continue →</button>
+    </div>
+</div>
+
 <!-- SCREEN 1 -->
-<div class="screen active" id="s1">
+<div class="screen" id="s1">
     <button class="start-btn" onclick="start()">I made something for you 💗</button>
 </div>
 
@@ -241,7 +249,7 @@ for(let i=0;i<25;i++){
 <!-- SCREEN 4 -->
 <div class="screen" id="s4">
     <div class="cake-area">
-	<img src="https://media.istockphoto.com/id/939746516/photo/young-girl-holding-mothers-day-gift.jpg?s=612x612&w=0&k=20&c=rdMYL-zbZJoLmVrBPozXJjkJw41x7OSW05YYeWRvelg=" class="side-img left" id="img1">
+        <img src="https://media.istockphoto.com/id/939746516/photo/young-girl-holding-mothers-day-gift.jpg?s=612x612&w=0&k=20&c=rdMYL-zbZJoLmVrBPozXJjkJw41x7OSW05YYeWRvelg=" class="side-img left" id="img1">
         <div class="cake" onclick="blow()">
             <div class="candle"><div class="flame"></div></div>
             <div class="candle"><div class="flame"></div></div>
@@ -251,21 +259,27 @@ for(let i=0;i<25;i++){
     </div>
     <p>Blow the candles 🎂</p>
     <div class="wish" id="wish">
-        🎉 Happy Birthday Deepthi 🎉<br><br>
+        🎉 Happy Birthday <span id="finalName"></span> 🎉<br><br>
         May your life be filled with love,<br>
-        happiness and beautiful moments 💖✨
-	Always keep smile on your Face it suits you💖
-	✨I pray God to fulfill all your wishes💖
+        happiness and beautiful moments 💖✨<br>
+        Always keep smile on your face 💖<br>
+        ✨ I pray God to fulfill all your wishes 💖
     </div>
 </div>
 
 <script>
-let current=1;
+let current=0;
 const text=`Thank you for coming into my life
 and being one of my best friends 💖
 
 You are special just the way you are 🌸`;
 let i=0;
+
+function saveName(){
+    userName=document.getElementById("nameInput").value || "Beautiful Soul";
+    document.getElementById("finalName").innerText=userName;
+    show(1);
+}
 
 function start(){
     show(2);
@@ -284,38 +298,15 @@ function show(n){
     current=n;
 }
 
-/* FINAL CANDLE BLOW MAGIC */
 function blow(){
     document.querySelectorAll(".flame").forEach(f=>f.remove());
-
-    // Pop balloons
     balloons.forEach(b=>{
         b.classList.add("pop");
         setTimeout(()=>b.remove(),350);
     });
-
-    // Show side images with slide + sparkle
     document.getElementById("img1").classList.add("show-img-left");
     document.getElementById("img2").classList.add("show-img-right");
-
-    // Show birthday wish
     document.getElementById("wish").style.display="block";
-
-    // Add floating hearts/roses/balloons
-    for(let i=0;i<45;i++){
-        let el=document.createElement("div");
-        el.classList.add("float");
-        el.style.left=Math.random()*100+"vw";
-        el.style.animationDuration=3+Math.random()*4+"s";
-        let r=Math.random();
-        if(r<0.4){el.innerHTML="🌹";el.classList.add("rose")}
-        else if(r<0.7){el.innerHTML="❤";el.classList.add("heart")}
-        else{
-            el.classList.add("balloon");
-            el.style.background=colors[Math.floor(Math.random()*colors.length)];
-        }
-        document.body.appendChild(el);
-    }
 }
 </script>
 
